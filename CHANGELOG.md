@@ -13,4 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Cloudflare Pages deploy workflow, Terraform Cloudflare provider stubs in
   `infra/terraform/envs/{dev,stg,prod}/`, the same standards machinery as
   `convergent-systems-co/go-tf-app-template` (bootstrap, label sync, triage,
-  secret scan, ADRs, MADR, Code of Conduct, AGPL-3.0).
+  secret scan, ADRs, MADR, Code of Conduct).
+
+### Changed
+
+- Relicensed from AGPL-3.0 to Apache-2.0 (code) and added CC-BY-4.0 for
+  catalog data, aligning with the `*-atoms` ecosystem dual-license
+  convention.
