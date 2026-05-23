@@ -18,7 +18,7 @@ Bootstrap state. The repo exists with the standard atoms scaffold; the catalog i
 ```
 pipelines/                       catalog content (empty — pipeline definitions land here)
 schemas/                         local schema references; canonical schemas live in schema-atoms
-web/site/                        Astro static site → pipeline-atoms.com
+web/                             Astro static site → pipeline-atoms.com
 infra/terraform/                 Cloudflare Pages + DNS via split-token aliased providers
 ATOMS.yml                        catalog manifest (conforms to atoms-spec/v1)
 ```
