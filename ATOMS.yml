@@ -1,40 +1,29 @@
 # ATOMS.yml — catalog manifest for pipeline-atoms
 #
-# See https://github.com/convergent-systems-co/atoms-spec for the canonical spec this conforms to.
-#
-# pipeline-atoms catalogs CI/CD pipeline primitives — reusable workflow steps,
-# trigger conditions, gates, deployment recipes. Composable across runtimes
-# (GitHub Actions today; portable to Buildkite, GitLab CI, etc. via the
-# canonical schema in schema-atoms).
+# Conforms to: https://schema-atoms.com/
+# spec_version: atoms-spec/v1.1.0
 
+spec_version: atoms-spec/v1.1.0
 name: pipeline-atoms
 version: 0.1.0
-spec: atoms-spec/v1
-domain: pipeline-atoms.com
-ecosystem:
-  federation: xdao.co
-  redirect: pipeline.xdao.co
-
-purpose: |
+canonical_domain: pipeline-atoms.com
+federation: convergent-systems.co
+description: |
   Pipeline primitives for CI/CD — reusable workflow steps, trigger conditions,
   gates, deployment recipes. Composable, versioned, runtime-agnostic via a
   canonical pipeline schema published in schema-atoms.
-
 # Per the v0.1 taxonomy spec, pipeline-atoms hosts a single top-level type:
 # `pipeline`. Sub-types and per-instance schema are deferred to the schema
 # authoring sub-project.
-atomTypes: []   # TBD — schema-atoms will publish the pipeline schema
-
-compositionType: pipelines
-compositionDir: pipelines
-
-ruleTypes: []   # TBD — conformance wiring sub-project
-
-runtimeConsumers:
+atom_types: []   # TBD — schema-atoms will publish the pipeline schema
+composition_type: pipelines
+composition_dir: pipelines
+runtime_consumers:
   - aish
   - olympus
-
-license: Apache-2.0
-maintainers:
-  - name: Convergent Systems
-    contact: maintainers@xdao.co
+lifecycle:
+  current: draft
+licensing:
+  code: Apache-2.0
+steward: convergent-systems-co
+infrastructure_operator: convergent-systems-co
