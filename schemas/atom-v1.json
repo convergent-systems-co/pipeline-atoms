@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pipeline-atoms.com/schemas/atom-v1.json",
+  "title": "pipeline-atoms v1 pipeline atom",
+  "description": "A pipeline atom is a reusable, versioned unit of CI/CD behavior. Type determines granularity: stage (a named phase in a pipeline), step (a single command or action inside a stage), gate (a pass/fail checkpoint that controls forward progress). Composable and runtime-agnostic.",
+  "type": "object",
+  "required": [
+    "schema",
+    "type",
+    "id",
+    "version",
+    "name",
+    "description",
+    "runtime"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "https://pipeline-atoms.com/schemas/atom-v1.json"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["stage", "step", "gate"],
+      "description": "stage — a named phase grouping steps (e.g. lint, test, build, deploy); step — a single executable action inside a stage; gate — a pass/fail checkpoint evaluated before pipeline proceeds."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*(?:/[a-z0-9-]+)*$",
+      "description": "Stable, human-readable identifier in kebab-case segments, e.g. 'ci/validate-stage'."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[A-Za-z0-9.-]+)?$",
+      "description": "SemVer. Patch for command tweaks; minor for new optional fields; major for breaking interface changes."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "runtime": {
+      "type": "object",
+      "required": ["engine"],
+      "additionalProperties": false,
+      "properties": {
+        "engine": {
+          "type": "string",
+          "description": "Target CI runtime. Examples: github-actions, cloudflare-pages, wrangler, generic-shell."
+        },
+        "command": {
+          "type": "string",
+          "description": "Shell command to execute (step type). Use environment variable references for secrets."
+        },
+        "working_directory": {
+          "type": "string",
+          "description": "Working directory relative to repo root. Defaults to repo root."
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Environment variable name → description or $VAR_NAME reference. Values MUST NOT contain literal secrets."
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Hard timeout; pipeline fails if exceeded."
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": ["ref", "version"],
+        "additionalProperties": false,
+        "properties": {
+          "ref":     { "type": "string", "minLength": 1 },
+          "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[A-Za-z0-9.-]+)?$" }
+        }
+      },
+      "description": "Ordered list of step atom refs (stage type only)."
+    },
+    "condition": {
+      "type": "string",
+      "description": "Gate evaluation expression. Platform-specific syntax, e.g. '${{ steps.test.outcome == \"success\" }}'."
+    },
+    "on_failure": {
+      "type": "string",
+      "enum": ["fail", "warn", "skip"],
+      "default": "fail",
+      "description": "Behavior when a gate condition is not met."
+    },
+    "authored_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "signed_by": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "lifecycle": {
+      "type": "string",
+      "enum": ["draft", "stable", "deprecated", "retired"],
+      "default": "draft"
+    },
+    "superseded_by": {
+      "type": "string",
+      "description": "ID of the atom that replaces this one when deprecated or retired."
+    }
+  }
+}

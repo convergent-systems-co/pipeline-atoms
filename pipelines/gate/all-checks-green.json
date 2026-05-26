@@ -1,0 +1,18 @@
+{
+  "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+  "type": "gate",
+  "id": "deploy/all-checks-green-gate",
+  "version": "1.0.0",
+  "name": "All Checks Green",
+  "description": "Deployment gate that blocks forward progress until all required CI checks have passed. Evaluates the GitHub Actions 'needs' context to confirm every upstream job concluded with 'success'. A single upstream failure causes this gate to fail, preventing any deploy step from running. Implements Code.md §11.10: 'Merge before CI green defeats Code.md §3.'",
+  "runtime": {
+    "engine": "github-actions",
+    "command": "echo 'All upstream checks green — proceeding to deploy.'",
+    "timeout_seconds": 10
+  },
+  "condition": "${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}",
+  "on_failure": "fail",
+  "authored_by": "convergent-systems-key",
+  "tags": ["ci", "deploy", "gate", "quality-gate", "all-checks"],
+  "lifecycle": "stable"
+}

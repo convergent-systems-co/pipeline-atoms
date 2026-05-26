@@ -1,0 +1,24 @@
+{
+  "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+  "type": "stage",
+  "id": "ci/validate-stage",
+  "version": "1.0.0",
+  "name": "CI Validate Stage",
+  "description": "Validation stage that runs the atoms catalog validator (validate_atoms.py) against all atom JSON files in the repo. Confirms schema conformance, required field presence, and SemVer format for every atom before any build or deploy step proceeds.",
+  "runtime": {
+    "engine": "github-actions",
+    "command": "python scripts/validate_atoms.py",
+    "working_directory": ".",
+    "environment": {
+      "ATOMS_DIR": "atoms"
+    },
+    "timeout_seconds": 120
+  },
+  "steps": [
+    { "ref": "ci/npm-ci-step",                 "version": "1.0.0" },
+    { "ref": "ci/run-validate-atoms-step",      "version": "1.0.0" }
+  ],
+  "authored_by": "convergent-systems-key",
+  "tags": ["ci", "validation", "schema", "catalog"],
+  "lifecycle": "stable"
+}

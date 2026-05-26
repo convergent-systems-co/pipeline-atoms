@@ -1,0 +1,17 @@
+{
+  "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+  "type": "step",
+  "id": "ci/npm-ci-step",
+  "version": "1.0.0",
+  "name": "npm ci",
+  "description": "Install Node.js dependencies from the lockfile using 'npm ci'. Fails fast if package-lock.json is absent or out of sync with package.json. Produces a reproducible, clean node_modules from the pinned lockfile — never hoists or deduplicates beyond what the lockfile specifies.",
+  "runtime": {
+    "engine": "github-actions",
+    "command": "npm ci",
+    "working_directory": ".",
+    "timeout_seconds": 180
+  },
+  "authored_by": "convergent-systems-key",
+  "tags": ["ci", "node", "npm", "install", "dependencies"],
+  "lifecycle": "stable"
+}
