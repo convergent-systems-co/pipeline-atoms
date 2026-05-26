@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pipeline-atoms.com/schemas/composition-v1.json",
+  "title": "pipeline-atoms v1 pipeline composition",
+  "description": "A pipeline composition assembles stages, steps, and gates into a named, end-to-end workflow. The composed pipeline is runtime-agnostic; a renderer translates it to GitHub Actions YAML, Cloudflare Pages config, or another target.",
+  "type": "object",
+  "required": [
+    "schema",
+    "canonical_name",
+    "version",
+    "description",
+    "stages"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "https://pipeline-atoms.com/schemas/composition-v1.json"
+    },
+    "canonical_name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*(?:/[a-z0-9-]+)*/pipelines/[a-z0-9][a-z0-9-]{0,62}[a-z0-9]$",
+      "description": "Fully-qualified name in <namespace>/pipelines/<slug> form."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[A-Za-z0-9.-]+)?$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "triggers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Events that start this pipeline, e.g. push, pull_request, schedule."
+    },
+    "stages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["ref", "version"],
+        "additionalProperties": false,
+        "properties": {
+          "ref":       { "type": "string", "minLength": 1 },
+          "version":   { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[A-Za-z0-9.-]+)?$" },
+          "depends_on": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 },
+            "description": "IDs of stages that must complete before this one starts."
+          }
+        }
+      },
+      "description": "Ordered or dependency-resolved list of stage atom refs."
+    },
+    "authored_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "lifecycle": {
+      "type": "string",
+      "enum": ["draft", "stable", "deprecated", "retired"],
+      "default": "draft"
+    }
+  }
+}
