@@ -1,0 +1,91 @@
+{
+  "catalog": "pipeline-atoms",
+  "version": "0.1.0",
+  "built_at": "2026-05-26T16:02:20+00:00",
+  "atoms": [
+    {
+      "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+      "type": "gate",
+      "id": "deploy/all-checks-green-gate",
+      "version": "1.0.0",
+      "name": "All Checks Green",
+      "description": "Deployment gate that blocks forward progress until all required CI checks have passed. Evaluates the GitHub Actions 'needs' context to confirm every upstream job concluded with 'success'. A single upstream failure causes this gate to fail, preventing any deploy step from running. Implements Code.md §11.10: 'Merge before CI green defeats Code.md §3.'",
+      "runtime": {
+        "engine": "github-actions",
+        "command": "echo 'All upstream checks green — proceeding to deploy.'",
+        "timeout_seconds": 10
+      },
+      "condition": "${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}",
+      "on_failure": "fail",
+      "authored_by": "convergent-systems-key",
+      "tags": [
+        "ci",
+        "deploy",
+        "gate",
+        "quality-gate",
+        "all-checks"
+      ],
+      "lifecycle": "stable"
+    },
+    {
+      "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+      "type": "stage",
+      "id": "ci/validate-stage",
+      "version": "1.0.0",
+      "name": "CI Validate Stage",
+      "description": "Validation stage that runs the atoms catalog validator (validate_atoms.py) against all atom JSON files in the repo. Confirms schema conformance, required field presence, and SemVer format for every atom before any build or deploy step proceeds.",
+      "runtime": {
+        "engine": "github-actions",
+        "command": "python scripts/validate_atoms.py",
+        "working_directory": ".",
+        "environment": {
+          "ATOMS_DIR": "atoms"
+        },
+        "timeout_seconds": 120
+      },
+      "steps": [
+        {
+          "ref": "ci/npm-ci-step",
+          "version": "1.0.0"
+        },
+        {
+          "ref": "ci/run-validate-atoms-step",
+          "version": "1.0.0"
+        }
+      ],
+      "authored_by": "convergent-systems-key",
+      "tags": [
+        "ci",
+        "validation",
+        "schema",
+        "catalog"
+      ],
+      "lifecycle": "stable"
+    },
+    {
+      "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+      "type": "step",
+      "id": "ci/npm-ci-step",
+      "version": "1.0.0",
+      "name": "npm ci",
+      "description": "Install Node.js dependencies from the lockfile using 'npm ci'. Fails fast if package-lock.json is absent or out of sync with package.json. Produces a reproducible, clean node_modules from the pinned lockfile — never hoists or deduplicates beyond what the lockfile specifies.",
+      "runtime": {
+        "engine": "github-actions",
+        "command": "npm ci",
+        "working_directory": ".",
+        "timeout_seconds": 180
+      },
+      "authored_by": "convergent-systems-key",
+      "tags": [
+        "ci",
+        "node",
+        "npm",
+        "install",
+        "dependencies"
+      ],
+      "lifecycle": "stable"
+    }
+  ],
+  "compositions": [],
+  "rules": []
+}
