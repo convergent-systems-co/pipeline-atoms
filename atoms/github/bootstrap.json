@@ -1,0 +1,19 @@
+{
+  "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+  "type": "github",
+  "id": "pipeline-atoms/github/bootstrap",
+  "version": "1.0.0",
+  "name": "One-Shot Repo Bootstrap",
+  "description": "Fires only when github.run_number == 1 (the very first push to a new repo). Installs canonical labels from repo-standards and runs bootstrap setup tasks. Self-skips on all subsequent pushes via the run_number condition.",
+  "runtime": {
+    "engine": "github-actions"
+  },
+  "trigger": "push",
+  "trigger_filter": "branches: [main]",
+  "condition": "github.run_number == 1",
+  "jobs": ["install-labels", "bootstrap"],
+  "uses_secrets": [],
+  "authored_by": "convergent-systems-key",
+  "tags": ["github-actions", "bootstrap", "one-shot"],
+  "lifecycle": "stable"
+}

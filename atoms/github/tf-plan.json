@@ -1,0 +1,18 @@
+{
+  "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+  "type": "github",
+  "id": "pipeline-atoms/github/tf-plan",
+  "version": "1.0.0",
+  "name": "Terraform Plan",
+  "description": "Runs OpenTofu/Terraform plan in a matrix across dev, stg, and prod environments on pull_requests that touch infra/terraform/**. Posts plan output as a PR comment. Does not apply — plan only.",
+  "runtime": {
+    "engine": "github-actions"
+  },
+  "trigger": "pull_request",
+  "trigger_filter": "paths: [infra/terraform/**]",
+  "jobs": ["plan"],
+  "uses_secrets": ["CLOUDFLARE_API_TOKEN", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY"],
+  "authored_by": "convergent-systems-key",
+  "tags": ["github-actions", "terraform", "infra", "plan"],
+  "lifecycle": "stable"
+}

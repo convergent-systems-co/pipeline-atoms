@@ -1,0 +1,17 @@
+{
+  "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+  "type": "github",
+  "id": "pipeline-atoms/github/terraform-apply-dns",
+  "version": "1.0.0",
+  "name": "Create DNS CNAME",
+  "description": "Creates a Cloudflare DNS CNAME record for a *-atoms.com domain via the Cloudflare API. Used during the DNS/Terraform sprint to wire custom domains to Cloudflare Pages projects. Fires on workflow_dispatch with inputs for zone, name, and target.",
+  "runtime": {
+    "engine": "github-actions"
+  },
+  "trigger": "workflow_dispatch",
+  "jobs": ["create-cname"],
+  "uses_secrets": ["CLOUDFLARE_DNS_TOKEN"],
+  "authored_by": "convergent-systems-key",
+  "tags": ["github-actions", "dns", "cloudflare", "cname"],
+  "lifecycle": "stable"
+}

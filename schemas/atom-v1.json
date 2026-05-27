@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://pipeline-atoms.com/schemas/atom-v1.json",
   "title": "pipeline-atoms v1 pipeline atom",
-  "description": "A pipeline atom is a reusable, versioned unit of CI/CD behavior. Type determines granularity: stage (a named phase in a pipeline), step (a single command or action inside a stage), gate (a pass/fail checkpoint that controls forward progress). Composable and runtime-agnostic.",
+  "description": "A pipeline atom is a reusable, versioned unit of CI/CD behavior. Type determines granularity: stage (a named phase in a pipeline), step (a single command or action inside a stage), gate (a pass/fail checkpoint that controls forward progress), github (a complete GitHub Actions workflow file catalogued as an atom). Composable and runtime-agnostic.",
   "type": "object",
   "required": [
     "schema",
@@ -10,8 +10,7 @@
     "id",
     "version",
     "name",
-    "description",
-    "runtime"
+    "description"
   ],
   "additionalProperties": false,
   "properties": {
@@ -21,8 +20,8 @@
     },
     "type": {
       "type": "string",
-      "enum": ["stage", "step", "gate"],
-      "description": "stage — a named phase grouping steps (e.g. lint, test, build, deploy); step — a single executable action inside a stage; gate — a pass/fail checkpoint evaluated before pipeline proceeds."
+      "enum": ["stage", "step", "gate", "github"],
+      "description": "stage — a named phase grouping steps (e.g. lint, test, build, deploy); step — a single executable action inside a stage; gate — a pass/fail checkpoint evaluated before pipeline proceeds; github — a complete GitHub Actions workflow file catalogued as a reusable atom."
     },
     "id": {
       "type": "string",
@@ -119,6 +118,26 @@
     "superseded_by": {
       "type": "string",
       "description": "ID of the atom that replaces this one when deprecated or retired."
+    },
+    "trigger": {
+      "type": "string",
+      "description": "GitHub Actions event(s) that fire this workflow. E.g. push, pull_request, tag, schedule, workflow_dispatch. Comma-separate multiple events."
+    },
+    "trigger_filter": {
+      "type": "string",
+      "description": "Constraint applied to the trigger, e.g. 'branches: [main]', 'tags: [v*]', 'paths: [infra/terraform/**]'."
+    },
+    "jobs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Top-level job names defined in the workflow file (github type only)."
+    },
+    "uses_secrets": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 },
+      "description": "GitHub Actions secret names consumed by this workflow. Values MUST be secret name references, not literal values."
     }
   }
 }

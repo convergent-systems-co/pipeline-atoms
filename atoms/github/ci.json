@@ -1,0 +1,17 @@
+{
+  "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+  "type": "github",
+  "id": "pipeline-atoms/github/ci",
+  "version": "1.0.0",
+  "name": "CI Pipeline",
+  "description": "Continuous integration pipeline for *-atoms catalog sites: runs TypeScript type-check, Astro build, and Lighthouse performance audit. Fires on every push and pull_request to catch regressions before merge.",
+  "runtime": {
+    "engine": "github-actions"
+  },
+  "trigger": "push, pull_request",
+  "jobs": ["check", "build", "lighthouse"],
+  "uses_secrets": [],
+  "authored_by": "convergent-systems-key",
+  "tags": ["github-actions", "ci", "astro", "lighthouse"],
+  "lifecycle": "stable"
+}

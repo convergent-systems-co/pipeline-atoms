@@ -1,0 +1,17 @@
+{
+  "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+  "type": "github",
+  "id": "pipeline-atoms/github/add-pages-domain",
+  "version": "1.0.0",
+  "name": "Add Custom Domain to Cloudflare Pages",
+  "description": "Registers a custom domain (e.g. pipeline-atoms.com) with an existing Cloudflare Pages project via the Cloudflare API. Fires on workflow_dispatch with inputs for project name and domain. Used by every *-atoms catalog repo during initial site provisioning.",
+  "runtime": {
+    "engine": "github-actions"
+  },
+  "trigger": "workflow_dispatch",
+  "jobs": ["add-domain"],
+  "uses_secrets": ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"],
+  "authored_by": "convergent-systems-key",
+  "tags": ["github-actions", "cloudflare-pages", "custom-domain"],
+  "lifecycle": "stable"
+}
