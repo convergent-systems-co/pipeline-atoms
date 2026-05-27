@@ -1,7 +1,7 @@
 {
   "catalog": "pipeline-atoms",
   "version": "0.1.0",
-  "built_at": "2026-05-26T16:02:20+00:00",
+  "built_at": "2026-05-27T19:34:21+00:00",
   "atoms": [
     {
       "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
@@ -24,6 +24,319 @@
         "gate",
         "quality-gate",
         "all-checks"
+      ],
+      "lifecycle": "stable"
+    },
+    {
+      "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+      "type": "github",
+      "id": "pipeline-atoms/github/add-pages-domain",
+      "version": "1.0.0",
+      "name": "Add Custom Domain to Cloudflare Pages",
+      "description": "Registers a custom domain (e.g. pipeline-atoms.com) with an existing Cloudflare Pages project via the Cloudflare API. Fires on workflow_dispatch with inputs for project name and domain. Used by every *-atoms catalog repo during initial site provisioning.",
+      "runtime": {
+        "engine": "github-actions"
+      },
+      "trigger": "workflow_dispatch",
+      "jobs": [
+        "add-domain"
+      ],
+      "uses_secrets": [
+        "CLOUDFLARE_API_TOKEN",
+        "CLOUDFLARE_ACCOUNT_ID"
+      ],
+      "authored_by": "convergent-systems-key",
+      "tags": [
+        "github-actions",
+        "cloudflare-pages",
+        "custom-domain"
+      ],
+      "lifecycle": "stable"
+    },
+    {
+      "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+      "type": "github",
+      "id": "pipeline-atoms/github/bootstrap",
+      "version": "1.0.0",
+      "name": "One-Shot Repo Bootstrap",
+      "description": "Fires only when github.run_number == 1 (the very first push to a new repo). Installs canonical labels from repo-standards and runs bootstrap setup tasks. Self-skips on all subsequent pushes via the run_number condition.",
+      "runtime": {
+        "engine": "github-actions"
+      },
+      "trigger": "push",
+      "trigger_filter": "branches: [main]",
+      "condition": "github.run_number == 1",
+      "jobs": [
+        "install-labels",
+        "bootstrap"
+      ],
+      "uses_secrets": [],
+      "authored_by": "convergent-systems-key",
+      "tags": [
+        "github-actions",
+        "bootstrap",
+        "one-shot"
+      ],
+      "lifecycle": "stable"
+    },
+    {
+      "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+      "type": "github",
+      "id": "pipeline-atoms/github/ci",
+      "version": "1.0.0",
+      "name": "CI Pipeline",
+      "description": "Continuous integration pipeline for *-atoms catalog sites: runs TypeScript type-check, Astro build, and Lighthouse performance audit. Fires on every push and pull_request to catch regressions before merge.",
+      "runtime": {
+        "engine": "github-actions"
+      },
+      "trigger": "push, pull_request",
+      "jobs": [
+        "check",
+        "build",
+        "lighthouse"
+      ],
+      "uses_secrets": [],
+      "authored_by": "convergent-systems-key",
+      "tags": [
+        "github-actions",
+        "ci",
+        "astro",
+        "lighthouse"
+      ],
+      "lifecycle": "stable"
+    },
+    {
+      "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+      "type": "github",
+      "id": "pipeline-atoms/github/deploy",
+      "version": "1.0.0",
+      "name": "Deploy to Cloudflare Pages",
+      "description": "Deploys a *-atoms catalog site to Cloudflare Pages on every push to the main branch. Requires CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID org-level secrets.",
+      "runtime": {
+        "engine": "github-actions"
+      },
+      "trigger": "push",
+      "trigger_filter": "branches: [main]",
+      "jobs": [
+        "deploy"
+      ],
+      "uses_secrets": [
+        "CLOUDFLARE_API_TOKEN",
+        "CLOUDFLARE_ACCOUNT_ID"
+      ],
+      "authored_by": "convergent-systems-key",
+      "tags": [
+        "github-actions",
+        "deploy",
+        "cloudflare-pages"
+      ],
+      "lifecycle": "stable"
+    },
+    {
+      "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+      "type": "github",
+      "id": "pipeline-atoms/github/label-cleanup",
+      "version": "1.0.0",
+      "name": "Label Cleanup",
+      "description": "Migrates non-standard labels to their canonical aliases defined in repo-standards. Detects diverged labels, renames them, and removes true duplicates. Runs every Monday at 08:00 UTC and on workflow_dispatch.",
+      "runtime": {
+        "engine": "github-actions"
+      },
+      "trigger": "schedule, workflow_dispatch",
+      "trigger_filter": "schedule: Monday 08:00 UTC",
+      "jobs": [
+        "cleanup"
+      ],
+      "uses_secrets": [],
+      "authored_by": "convergent-systems-key",
+      "tags": [
+        "github-actions",
+        "labels",
+        "cleanup"
+      ],
+      "lifecycle": "stable"
+    },
+    {
+      "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+      "type": "github",
+      "id": "pipeline-atoms/github/label-sync",
+      "version": "1.0.0",
+      "name": "Label Sync",
+      "description": "Installs the canonical agile label set (agile/epic, agile/feature, agile/story, agile/task, status/*, type/*) from convergent-systems-co/repo-standards. Runs on workflow_dispatch and on a weekly schedule to keep repos aligned with the governance standard.",
+      "runtime": {
+        "engine": "github-actions"
+      },
+      "trigger": "workflow_dispatch, schedule",
+      "trigger_filter": "schedule: weekly",
+      "jobs": [
+        "sync"
+      ],
+      "uses_secrets": [],
+      "authored_by": "convergent-systems-key",
+      "tags": [
+        "github-actions",
+        "labels",
+        "governance"
+      ],
+      "lifecycle": "stable"
+    },
+    {
+      "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+      "type": "github",
+      "id": "pipeline-atoms/github/release",
+      "version": "1.0.0",
+      "name": "Tagged Release",
+      "description": "Runs on semver tag push (v*): builds the site, deploys to Cloudflare Pages, and creates a GitHub Release with auto-generated release notes. Implements the tag→deploy→release step of Code.md §11.10.",
+      "runtime": {
+        "engine": "github-actions"
+      },
+      "trigger": "tag",
+      "trigger_filter": "tags: [v*]",
+      "jobs": [
+        "release"
+      ],
+      "uses_secrets": [
+        "CLOUDFLARE_API_TOKEN",
+        "CLOUDFLARE_ACCOUNT_ID"
+      ],
+      "authored_by": "convergent-systems-key",
+      "tags": [
+        "github-actions",
+        "release",
+        "semver"
+      ],
+      "lifecycle": "stable"
+    },
+    {
+      "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+      "type": "github",
+      "id": "pipeline-atoms/github/secret-scan",
+      "version": "1.0.0",
+      "name": "TruffleHog Secret Scan",
+      "description": "Runs TruffleHog secret detection on every push and pull_request to prevent credentials, API keys, and tokens from entering the codebase. Fails the workflow on any verified finding.",
+      "runtime": {
+        "engine": "github-actions"
+      },
+      "trigger": "push, pull_request",
+      "jobs": [
+        "trufflehog"
+      ],
+      "uses_secrets": [],
+      "authored_by": "convergent-systems-key",
+      "tags": [
+        "github-actions",
+        "security",
+        "secrets",
+        "trufflehog"
+      ],
+      "lifecycle": "stable"
+    },
+    {
+      "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+      "type": "github",
+      "id": "pipeline-atoms/github/terraform-apply-dns",
+      "version": "1.0.0",
+      "name": "Create DNS CNAME",
+      "description": "Creates a Cloudflare DNS CNAME record for a *-atoms.com domain via the Cloudflare API. Used during the DNS/Terraform sprint to wire custom domains to Cloudflare Pages projects. Fires on workflow_dispatch with inputs for zone, name, and target.",
+      "runtime": {
+        "engine": "github-actions"
+      },
+      "trigger": "workflow_dispatch",
+      "jobs": [
+        "create-cname"
+      ],
+      "uses_secrets": [
+        "CLOUDFLARE_DNS_TOKEN"
+      ],
+      "authored_by": "convergent-systems-key",
+      "tags": [
+        "github-actions",
+        "dns",
+        "cloudflare",
+        "cname"
+      ],
+      "lifecycle": "stable"
+    },
+    {
+      "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+      "type": "github",
+      "id": "pipeline-atoms/github/terraform-apply",
+      "version": "1.0.0",
+      "name": "Terraform Apply",
+      "description": "Applies Terraform/OpenTofu changes via workflow_dispatch with an explicit confirmation gate (inputs: env=[dev|stg|prod], confirm must equal 'apply'). Prevents accidental applies; the confirm check is enforced in the job condition before any state mutation.",
+      "runtime": {
+        "engine": "github-actions"
+      },
+      "trigger": "workflow_dispatch",
+      "trigger_filter": "inputs: env (dev|stg|prod), confirm (must be 'apply')",
+      "jobs": [
+        "apply"
+      ],
+      "uses_secrets": [
+        "CLOUDFLARE_DNS_TOKEN",
+        "CLOUDFLARE_ACCOUNT_ID",
+        "R2_ACCESS_KEY_ID",
+        "R2_SECRET_ACCESS_KEY"
+      ],
+      "authored_by": "convergent-systems-key",
+      "tags": [
+        "github-actions",
+        "terraform",
+        "infra",
+        "apply"
+      ],
+      "lifecycle": "stable"
+    },
+    {
+      "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+      "type": "github",
+      "id": "pipeline-atoms/github/tf-plan",
+      "version": "1.0.0",
+      "name": "Terraform Plan",
+      "description": "Runs OpenTofu/Terraform plan in a matrix across dev, stg, and prod environments on pull_requests that touch infra/terraform/**. Posts plan output as a PR comment. Does not apply — plan only.",
+      "runtime": {
+        "engine": "github-actions"
+      },
+      "trigger": "pull_request",
+      "trigger_filter": "paths: [infra/terraform/**]",
+      "jobs": [
+        "plan"
+      ],
+      "uses_secrets": [
+        "CLOUDFLARE_API_TOKEN",
+        "R2_ACCESS_KEY_ID",
+        "R2_SECRET_ACCESS_KEY"
+      ],
+      "authored_by": "convergent-systems-key",
+      "tags": [
+        "github-actions",
+        "terraform",
+        "infra",
+        "plan"
+      ],
+      "lifecycle": "stable"
+    },
+    {
+      "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+      "type": "github",
+      "id": "pipeline-atoms/github/triage",
+      "version": "1.0.0",
+      "name": "Issue Triage",
+      "description": "Automatically triages new and edited issues by applying the agile label hierarchy (epic/feature/story/task) and status labels. Delegates to the convergent-systems-co/repo-standards shared triage workflow via workflow_call. Fires on issues (opened, edited, reopened), issue_comment, and workflow_dispatch.",
+      "runtime": {
+        "engine": "github-actions"
+      },
+      "trigger": "issues, issue_comment, workflow_dispatch",
+      "trigger_filter": "issues: [opened, edited, reopened]",
+      "jobs": [
+        "triage"
+      ],
+      "uses_secrets": [],
+      "authored_by": "convergent-systems-key",
+      "tags": [
+        "github-actions",
+        "triage",
+        "issues"
       ],
       "lifecycle": "stable"
     },

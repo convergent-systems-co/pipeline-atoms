@@ -1,0 +1,18 @@
+{
+  "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+  "type": "github",
+  "id": "pipeline-atoms/github/terraform-apply",
+  "version": "1.0.0",
+  "name": "Terraform Apply",
+  "description": "Applies Terraform/OpenTofu changes via workflow_dispatch with an explicit confirmation gate (inputs: env=[dev|stg|prod], confirm must equal 'apply'). Prevents accidental applies; the confirm check is enforced in the job condition before any state mutation.",
+  "runtime": {
+    "engine": "github-actions"
+  },
+  "trigger": "workflow_dispatch",
+  "trigger_filter": "inputs: env (dev|stg|prod), confirm (must be 'apply')",
+  "jobs": ["apply"],
+  "uses_secrets": ["CLOUDFLARE_DNS_TOKEN", "CLOUDFLARE_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY"],
+  "authored_by": "convergent-systems-key",
+  "tags": ["github-actions", "terraform", "infra", "apply"],
+  "lifecycle": "stable"
+}

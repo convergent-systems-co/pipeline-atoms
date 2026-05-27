@@ -1,0 +1,18 @@
+{
+  "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+  "type": "github",
+  "id": "pipeline-atoms/github/triage",
+  "version": "1.0.0",
+  "name": "Issue Triage",
+  "description": "Automatically triages new and edited issues by applying the agile label hierarchy (epic/feature/story/task) and status labels. Delegates to the convergent-systems-co/repo-standards shared triage workflow via workflow_call. Fires on issues (opened, edited, reopened), issue_comment, and workflow_dispatch.",
+  "runtime": {
+    "engine": "github-actions"
+  },
+  "trigger": "issues, issue_comment, workflow_dispatch",
+  "trigger_filter": "issues: [opened, edited, reopened]",
+  "jobs": ["triage"],
+  "uses_secrets": [],
+  "authored_by": "convergent-systems-key",
+  "tags": ["github-actions", "triage", "issues"],
+  "lifecycle": "stable"
+}

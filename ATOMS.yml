@@ -12,10 +12,11 @@ description: |
   Pipeline primitives for CI/CD — reusable workflow steps, trigger conditions,
   gates, deployment recipes. Composable, versioned, runtime-agnostic via a
   canonical pipeline schema published in schema-atoms.
-# Per the v0.1 taxonomy spec, pipeline-atoms hosts a single top-level type:
-# `pipeline`. Sub-types and per-instance schema are deferred to the schema
-# authoring sub-project.
-atom_types: []   # TBD — schema-atoms will publish the pipeline schema
+atom_types:
+  - stage
+  - step
+  - gate
+  - github
 composition_type: pipelines
 composition_dir: pipelines
 runtime_consumers:

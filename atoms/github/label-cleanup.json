@@ -1,0 +1,18 @@
+{
+  "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
+  "type": "github",
+  "id": "pipeline-atoms/github/label-cleanup",
+  "version": "1.0.0",
+  "name": "Label Cleanup",
+  "description": "Migrates non-standard labels to their canonical aliases defined in repo-standards. Detects diverged labels, renames them, and removes true duplicates. Runs every Monday at 08:00 UTC and on workflow_dispatch.",
+  "runtime": {
+    "engine": "github-actions"
+  },
+  "trigger": "schedule, workflow_dispatch",
+  "trigger_filter": "schedule: Monday 08:00 UTC",
+  "jobs": ["cleanup"],
+  "uses_secrets": [],
+  "authored_by": "convergent-systems-key",
+  "tags": ["github-actions", "labels", "cleanup"],
+  "lifecycle": "stable"
+}
