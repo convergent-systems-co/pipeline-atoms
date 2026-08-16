@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TAG: ${{ github.ref_name }}
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_ACCOUNT_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
     steps:
@@ -37,7 +37,7 @@ jobs:
 
       # Cloudflare Pages deploy.
       # Requires (set by seed issue: "Wire Cloudflare Pages deployment"):
-      #   secrets.CLOUDFLARE_API_TOKEN     scope: Account.Cloudflare Pages:Edit
+      #   secrets.CLOUDFLARE_ACCOUNT_TOKEN scope: Account.Cloudflare Pages:Edit
       #   secrets.CLOUDFLARE_ACCOUNT_ID
       #   vars.CLOUDFLARE_PAGES_PROJECT    the Pages project name
       - name: deploy (Cloudflare Pages)

@@ -2,7 +2,7 @@
   "schema": "https://pipeline-atoms.com/schemas/atom-v1.json",
   "type": "github",
   "id": "pipeline-atoms/github/release",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Tagged Release",
   "description": "Runs on semver tag push (v*): builds the site, deploys to Cloudflare Pages, and creates a GitHub Release with auto-generated release notes. Implements the tag→deploy→release step of Code.md §11.10.",
   "runtime": {
@@ -11,7 +11,7 @@
   "trigger": "tag",
   "trigger_filter": "tags: [v*]",
   "jobs": ["release"],
-  "uses_secrets": ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"],
+  "uses_secrets": ["CLOUDFLARE_ACCOUNT_TOKEN", "CLOUDFLARE_ACCOUNT_ID"],
   "authored_by": "convergent-systems-key",
   "tags": ["github-actions", "release", "semver"],
   "lifecycle": "stable"
